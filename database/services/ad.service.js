@@ -1,6 +1,6 @@
 const { Ad } = require('../schemas/ad.schema');
 
-module.exports.createAd = async (adData, files, user) => {
+module.exports.createAd = async (adData, files) => {
     const images = files.map((file, index) => {
         return {
             name: `image_${index + 1}`,
@@ -16,41 +16,33 @@ module.exports.createAd = async (adData, files, user) => {
         propertyType: adData.propertyType,
         propertyStatus: adData.propertyStatus,
         publicationStatus: adData.publicationStatus,
-        images: images,
-        user: user.id
+        images: images
     });
     return ad.save().catch(err => { throw err });
 }
 
-module.exports.getPublishedAds = async (propertyType) => {
-    const results = await Ad.find({ propertyType }).where('publicationStatus', 'Published');
-    return results.map(res => new FormatedAd(res));
+module.exports.getAds = () => {
+    return Ad.find({});
 }
 
-module.exports.getAdByID = async (id) => {
-    const result = await Ad.findById(id);
-    return new FormatedAd(result);
+module.exports.getPublishedAds = (propertyType) => {
+    return Ad.find({ propertyType }).where('publicationStatus', 'Published');
 }
 
-module.exports.getByName = async (name) => {
-    const results = await Ad.find({ title: { $regex: "^" + name } });
-    return results.map(res => new FormatedAd(res));
+module.exports.getAdByID = (id) => {
+    return Ad.findById(id);
 }
 
-module.exports.getAdsByUserID = async (userID) => {
-    return Ad.find({ user: userID });
+module.exports.getAdsByName = (name) => {
+    return Ad.find({ title: { $regex: "^" + name } });
 }
 
-module.exports.getAdByIDAndUserID = async (id, userID) => {
-    return Ad.findOne({ _id: id, user: userID });
+module.exports.delete = (id) => {
+    return Ad.deleteOne({ _id: id });
 }
 
-module.exports.deleteAdByID = async (id, userID) => {
-    return Ad.deleteOne({ _id: id, user: userID });
-}
-
-module.exports.updateById = async (id, userID, content) => {
-    await Ad.updateOne({ _id: id, user: userID }, {
+module.exports.update = async (id, content) => {
+    await Ad.updateOne({ _id: id }, {
         title: content.title,
         price: content.price,
         date: new Date(content.date).getTime(),
@@ -80,22 +72,4 @@ module.exports.addQuestion = async (id, content, user) => {
         answers: []
     });
     await Ad.updateOne({ _id: id }, { comments });
-}
-
-// Reformate Ad schema, only for display purpose 
-class FormatedAd {
-    constructor(object) {
-        this.id = object.id;
-        this.title = object.title;
-        this.price = object.price;
-        this.date = object.date;
-        this.formatedDate = new Intl.DateTimeFormat('fr-FR', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(object.date));
-        this.description = object.description;
-        this.propertyType = object.propertyType;
-        this.propertyStatus = object.propertyStatus;
-        this.publicationStatus = object.publicationStatus;
-        this.images = object.images;
-        this.comments = object.comments;
-        this.user = object.user;
-    }
 }
