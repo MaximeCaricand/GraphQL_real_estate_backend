@@ -7,17 +7,16 @@ module.exports.objects = objects.join('\n');
 
 module.exports.queries = `
     getAdByID(id: String!): ${objectNames.Ad}!
-    getAdsByUserID(userID: String!): [${objectNames.Ad}!]!
-    getAdsByName(name: String!): [${objectNames.Ad}!]!
+    searchAdsByName(name: String!): [${objectNames.Ad}!]!
     getPublishedAds(propertyType: ${enumNames.PropertyType}!): [${objectNames.Ad}!]!
     getAds: [${objectNames.Ad}!]!
 `;
 
 module.exports.root = {
     Query: {
-        getAdByID: async (args) => await getAdByID(args.id),
-        getAdsByName: async (args) => await getAdsByName(args.name),
-        getPublishedAds: async (args) => await getPublishedAds(args.propertyType),
-        getAds: async () => await getAds(),
+        getAdByID: (root, args, context) => getAdByID(args.id),
+        searchAdsByName: (root, args, context) => getAdsByName(args.name),
+        getPublishedAds: (root, args, context) => getPublishedAds(args.propertyType),
+        getAds: () => getAds(),
     }
 };
