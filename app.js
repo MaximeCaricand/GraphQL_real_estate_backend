@@ -4,7 +4,8 @@ const logger = require('morgan');
 const debug = require('debug')('test:server');
 const { graphqlHTTP } = require('express-graphql');
 const { connect } = require('./database/index');
-const { schema, root } = require('./graphQL/index')
+const { schema } = require('./graphQL/index')
+
 
 const port = 3000;
 
@@ -14,7 +15,6 @@ app.set(port);
 app.use(logger('dev'));
 app.use('/graphql', graphqlHTTP({
     schema,
-    rootValue: root,
     graphiql: true,
 }));
 

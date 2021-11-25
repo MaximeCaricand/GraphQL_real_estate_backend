@@ -14,8 +14,10 @@ module.exports.queries = `
 `;
 
 module.exports.root = {
-    getAdById: async (args) => await getAdByID(args.id),
-    getAdsByName: async (args) => await getAdsByName(args.name),
-    getPublishedAds: async (args) => await getPublishedAds(args.propertyType),
-    getAds: async () => await getAds(),
+    Query: {
+        getAdByID: async (args) => await getAdByID(args.id),
+        getAdsByName: async (args) => await getAdsByName(args.name),
+        getPublishedAds: async (args) => await getPublishedAds(args.propertyType),
+        getAds: async () => await getAds(),
+    }
 };
