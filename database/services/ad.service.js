@@ -1,13 +1,8 @@
 const { Ad } = require('../schemas/ad.schema');
 
 module.exports.createAd = async (adData, files) => {
-    const images = files.map((file, index) => {
-        return {
-            name: `image_${index + 1}`,
-            content: `data:${file.mimetype};base64, ${file.data.toString('base64')}`,
-            type: file.mimetype,
-        }
-    });
+    console.log(adData);
+    const images = getImages(files);
     const ad = new Ad({
         title: adData.title,
         price: adData.price,
@@ -37,12 +32,13 @@ module.exports.getAdsByName = (name) => {
     return Ad.find({ title: { $regex: "^" + name } });
 }
 
-module.exports.delete = (id) => {
-    return Ad.deleteOne({ _id: id });
+module.exports.deleteAd = (id) => {
+    return Ad.findOneAndDelete({ _id: id }, { returnDocument: true });
 }
 
-module.exports.update = async (id, content) => {
-    await Ad.updateOne({ _id: id }, {
+module.exports.updateAd = async (id, content, files) => {
+    const images = getImages(files);
+    return Ad.findOneAndUpdate({ _id: id }, {
         title: content.title,
         price: content.price,
         date: new Date(content.date).getTime(),
@@ -50,26 +46,36 @@ module.exports.update = async (id, content) => {
         propertyType: content.propertyType,
         propertyStatus: content.propertyStatus,
         publicationStatus: content.publicationStatus,
-    });
+        images: images
+    }, { new: true });
 }
 
-module.exports.addAnswser = async (id, content, questionIndex, user) => {
+module.exports.addAnswser = async (id, questionIndex, agent, content) => {
     const ad = await this.getAdByID(id);
     const comments = ad.comments;
-    comments[questionIndex].answers.push({
+    comments[questionIndex]?.answers.push({
         content,
-        agent: `${user.firstname} ${user.lastname}`
+        agent
     });
-    await Ad.updateOne({ _id: id, user: user.id }, { comments });
+    return Ad.findOneAndUpdate({ _id: id }, { comments }, { new: true });
 }
 
-module.exports.addQuestion = async (id, content, user) => {
+module.exports.addQuestion = async (id, user, content) => {
     const ad = await this.getAdByID(id);
     const comments = ad.comments;
     comments.push({
         question: content,
-        user: `${user.firstname} ${user.lastname}`,
+        user,
         answers: []
     });
-    await Ad.updateOne({ _id: id }, { comments });
+    return Ad.findOneAndUpdate({ _id: id }, { comments }, { new: true });
+}
+
+function getImages(files) {
+    return files?.map((file, index) => {
+        return {
+            name: `image_${index + 1}`,
+            content: file, // image's base64
+        }
+    });
 }

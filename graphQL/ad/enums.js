@@ -16,8 +16,7 @@ module.exports.enums = [
         Sold
     }`,
     `enum ${enumNames.PublicationStatus} {
-        Available
-        Rented
-        Sold
+        Published
+        Hidden
     }`,
 ]

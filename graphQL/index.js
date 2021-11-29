@@ -2,19 +2,25 @@ const { makeExecutableSchema } = require("@graphql-tools/schema");
 const adSchema = require('./ad/index');
 
 const queries = [adSchema.queries];
-const mutations = [];
-const schema = [adSchema.enums, adSchema.objects];
+const mutations = [adSchema.mutations];
+const schema = [adSchema.enums, adSchema.objects, adSchema.inputs];
 
 const typeDefs = `
     ${schema.join('\n')}
     type Query {
         ${queries.join('\n')}
     }
+    type Mutation {
+        ${mutations.join('\n')}
+    }
 `;
 
 const resolvers = {
     Query: {
         ...adSchema.root.Query
+    },
+    Mutation: {
+        ...adSchema.root.Mutation
     }
 };
 
