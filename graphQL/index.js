@@ -1,9 +1,10 @@
 const { makeExecutableSchema } = require("@graphql-tools/schema");
 const adSchema = require('./ad/index');
+const sharedSchema = require('./shared/index');
 
 const queries = [adSchema.queries];
 const mutations = [adSchema.mutations];
-const schema = [adSchema.enums, adSchema.objects, adSchema.inputs];
+const schema = [sharedSchema.scalar, adSchema.enums, adSchema.objects, adSchema.inputs];
 
 const typeDefs = `
     ${schema.join('\n')}
@@ -16,6 +17,7 @@ const typeDefs = `
 `;
 
 const resolvers = {
+    ...sharedSchema.root,
     Query: {
         ...adSchema.root.Query
     },

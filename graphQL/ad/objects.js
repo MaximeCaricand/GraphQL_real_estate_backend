@@ -27,7 +27,7 @@ module.exports.objects = [
         id: ID!
         title: String!
         price: Int!
-        date: Int!
+        date: Date!
         description: String!
         propertyType: ${enumNames.PropertyType}!
         propertyStatus: ${enumNames.PropertyStatus}!

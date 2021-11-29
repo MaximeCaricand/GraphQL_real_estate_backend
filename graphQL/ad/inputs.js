@@ -11,7 +11,7 @@ module.exports.inputs = [
     `input ${inputNames.AdCreateContent} {
         title: String!
         price: Int!
-        date: Int!
+        date: Date!
         description: String!
         propertyType: ${enumNames.PropertyType}!
         propertyStatus: ${enumNames.PropertyStatus}!
@@ -20,7 +20,7 @@ module.exports.inputs = [
     `input ${inputNames.AdUpdateContent} {
         title: String!
         price: Int!
-        date: Int!
+        date: Date!
         description: String!
         propertyType: ${enumNames.PropertyType}!
         propertyStatus: ${enumNames.PropertyStatus}!
