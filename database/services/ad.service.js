@@ -1,7 +1,7 @@
 const { Ad } = require('../schemas/ad.schema');
+const AdModel = require('../models/ads').Ad;
 
 module.exports.createAd = async (adData, files) => {
-    console.log(adData);
     const images = getImages(files);
     const ad = new Ad({
         title: adData.title,
@@ -13,32 +13,38 @@ module.exports.createAd = async (adData, files) => {
         publicationStatus: adData.publicationStatus,
         images: images
     });
-    return ad.save().catch(err => { throw err });
+    const result = await ad.save().catch(err => { throw err });
+    return new AdModel(result);
 }
 
-module.exports.getAds = () => {
-    return Ad.find({});
+module.exports.getAds = async () => {
+    const results = await Ad.find({});
+    return results.map(result => new AdModel(result));
 }
 
-module.exports.getPublishedAds = (propertyType) => {
-    return Ad.find({ propertyType }).where('publicationStatus', 'Published');
+module.exports.getPublishedAds = async (propertyType) => {
+    const results = await Ad.find({ propertyType }).where('publicationStatus', 'Published');
+    return results.map(result => new AdModel(result));
 }
 
-module.exports.getAdByID = (id) => {
-    return Ad.findById(id);
+module.exports.getAdByID = async (id) => {
+    const result = await Ad.findById(id);
+    return result ? new AdModel(result) : null;
 }
 
-module.exports.getAdsByName = (name) => {
-    return Ad.find({ title: { $regex: "^" + name } });
+module.exports.getAdsByName = async (name) => {
+    const results = await Ad.find({ title: { $regex: "^" + name } });
+    return results.map(result => new AdModel(result));
 }
 
-module.exports.deleteAd = (id) => {
-    return Ad.findOneAndDelete({ _id: id }, { returnDocument: true });
+module.exports.deleteAd = async (id) => {
+    const result = await Ad.findOneAndDelete({ _id: id }, { returnDocument: true });
+    return result ? new AdModel(result) : null;
 }
 
 module.exports.updateAd = async (id, content, files) => {
     const images = getImages(files);
-    return Ad.findOneAndUpdate({ _id: id }, {
+    const result = await Ad.findOneAndUpdate({ _id: id }, {
         title: content.title,
         price: content.price,
         date: new Date(content.date).getTime(),
@@ -48,6 +54,7 @@ module.exports.updateAd = async (id, content, files) => {
         publicationStatus: content.publicationStatus,
         images: images
     }, { new: true });
+    return result ? new AdModel(result) : null;
 }
 
 module.exports.addAnswser = async (id, questionIndex, agent, content) => {
@@ -57,7 +64,8 @@ module.exports.addAnswser = async (id, questionIndex, agent, content) => {
         content,
         agent
     });
-    return Ad.findOneAndUpdate({ _id: id }, { comments }, { new: true });
+    const result = await Ad.findOneAndUpdate({ _id: id }, { comments }, { new: true });
+    return result ? new AdModel(result) : null;
 }
 
 module.exports.addQuestion = async (id, user, content) => {
@@ -68,7 +76,8 @@ module.exports.addQuestion = async (id, user, content) => {
         user,
         answers: []
     });
-    return Ad.findOneAndUpdate({ _id: id }, { comments }, { new: true });
+    const result = await Ad.findOneAndUpdate({ _id: id }, { comments }, { new: true });
+    return result ? new AdModel(result) : null;
 }
 
 function getImages(files) {

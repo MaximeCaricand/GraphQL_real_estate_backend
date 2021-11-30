@@ -12,7 +12,6 @@ module.exports.objects = [
     `type ${objectNames.AdImage} {
         name: String!
         content: String!
-        type: String!
     }`,
     `type ${objectNames.AdAnswers} {
         content: String!
@@ -22,6 +21,7 @@ module.exports.objects = [
         question: String!
         user: String!
         answers: [${objectNames.AdAnswers}!]!
+        answersLength: Int!
     }`,
     `type ${objectNames.Ad} {
         id: ID!
@@ -34,5 +34,7 @@ module.exports.objects = [
         publicationStatus: ${enumNames.PublicationStatus}!
         images: [${objectNames.AdImage}!]!
         comments: [${objectNames.AdComments}!]!
+        formatedDate(offset: Int!): String!
+        commentsLength: Int!
     }`
 ];
