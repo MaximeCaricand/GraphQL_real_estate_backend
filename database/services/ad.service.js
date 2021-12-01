@@ -23,7 +23,8 @@ module.exports.getAds = async () => {
 }
 
 module.exports.getPublishedAds = async (propertyType) => {
-    const results = await Ad.find({ propertyType }).where('publicationStatus', 'Published');
+    const params = propertyType ? { propertyType } : {};
+    const results = await Ad.find(params).where('publicationStatus', 'Published');
     return results.map(result => new AdModel(result));
 }
 
@@ -37,14 +38,19 @@ module.exports.getAdsByName = async (name) => {
     return results.map(result => new AdModel(result));
 }
 
+module.exports.numberOfAds = async (propertyType) => {
+    const params = propertyType ? { propertyType } : {};
+    const results = await Ad.find(params);
+    return results.length;
+}
+
 module.exports.deleteAd = async (id) => {
     const result = await Ad.findOneAndDelete({ _id: id }, { returnDocument: true });
     return result ? new AdModel(result) : null;
 }
 
 module.exports.updateAd = async (id, content, files) => {
-    const images = getImages(files);
-    const result = await Ad.findOneAndUpdate({ _id: id }, {
+    const updateData = {
         title: content.title,
         price: content.price,
         date: new Date(content.date).getTime(),
@@ -52,30 +58,38 @@ module.exports.updateAd = async (id, content, files) => {
         propertyType: content.propertyType,
         propertyStatus: content.propertyStatus,
         publicationStatus: content.publicationStatus,
-        images: images
-    }, { new: true });
+    }
+    const images = getImages(files);
+    if (images.length) {
+        updateData.images = images;
+    }
+    const result = await Ad.findOneAndUpdate({ _id: id }, updateData, { new: true });
     return result ? new AdModel(result) : null;
 }
 
 module.exports.addAnswser = async (id, questionIndex, agent, content) => {
     const ad = await this.getAdByID(id);
-    const comments = ad.comments;
-    comments[questionIndex]?.answers.push({
-        content,
-        agent
-    });
+    const comments = ad?.comments;
+    if (comments) {
+        comments[questionIndex]?.answers.push({
+            content,
+            agent
+        });
+    }
     const result = await Ad.findOneAndUpdate({ _id: id }, { comments }, { new: true });
     return result ? new AdModel(result) : null;
 }
 
 module.exports.addQuestion = async (id, user, content) => {
     const ad = await this.getAdByID(id);
-    const comments = ad.comments;
-    comments.push({
-        question: content,
-        user,
-        answers: []
-    });
+    const comments = ad?.comments;
+    if (comments) {
+        comments.push({
+            question: content,
+            user,
+            answers: []
+        });
+    }
     const result = await Ad.findOneAndUpdate({ _id: id }, { comments }, { new: true });
     return result ? new AdModel(result) : null;
 }
@@ -86,5 +100,5 @@ function getImages(files) {
             name: `image_${index + 1}`,
             content: file, // image's base64
         }
-    });
+    }) ?? [];
 }
