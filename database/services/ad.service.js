@@ -13,7 +13,7 @@ module.exports.createAd = async (adData, files) => {
         publicationStatus: adData.publicationStatus,
         images: images
     });
-    const result = await ad.save().catch(err => { throw err });
+    const result = await ad.save();
     return new AdModel(result);
 }
 

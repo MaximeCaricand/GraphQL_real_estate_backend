@@ -24,8 +24,7 @@ class Comment {
     constructor(object) {
         this.question = object.question;
         this.user = object.user;
-        this.answers = object.answers;
-        this.answers = object.answers?.map(answers => new Answer(answers));
+        this.answers = object.answers?.map(answer => new Answer(answer));
     }
     answersLength() {
         return this.answers.length;

@@ -15,8 +15,7 @@ module.exports = new GraphQLScalarType({
     },
     parseLiteral: (ast) => {
         if (ast.kind === Kind.INT) {
-            const num = parseInt(ast.value, 10);
-            return new Date(num).getTime();
+            return ast.value;
         }
     }
 });

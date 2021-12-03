@@ -8,8 +8,8 @@ module.exports.connect = async () => {
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
             });
-        return console.log('connection success');
+        return 'connection success';
     } catch (err) {
-        return console.log("connection failure", err);
+        return 'connection failure';
     }
 }

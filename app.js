@@ -18,8 +18,7 @@ app.use('/graphql', graphqlHTTP({
     graphiql: true,
 }));
 
-connect();
-
+connect().then(console.log);
 
 /**
  * Listen on provided port, on all network interfaces.

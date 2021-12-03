@@ -6,21 +6,6 @@ const { resolvers } = require('../../graphQL/index');
 const mongoose = require('mongoose');
 const { Ad } = require('../../database/models/ads');
 
-const fakeAnswer = () => {
-    return {
-        content: "content",
-        agent: "agent"
-    }
-}
-
-const fakeComment = (answers) => {
-    return {
-        question: "question",
-        user: "user",
-        answers: answers ?? []
-    }
-}
-
 const fakeAd = (comment, images) => {
     return {
         id: "id",
@@ -159,27 +144,25 @@ describe('Resolvers', () => {
         });
     });
     describe('Mutations', () => {
-        describe.only('updateAd', () => {
-            it.only('Should save without images', sinonTest(async function () {
-                const input = fakeC
-                const expected = new Ad(fakeAd());
-                // const updateInput = fakeUpdateInput();
-                const findOneAndUpdateStub = sinon.stub(mongoose.Model.prototype, 'save').resolves(null);
-                // const result = await resolvers.Mutation.updateAd({}, { id: "id", content: updateInput, images: [] });
-                // expect(result).to.be.deep.equal(null);
-                // expect(findOneAndUpdateStub.calledOnce).to.be.true;
-                // expect(findOneAndUpdateStub.args[0][0]).to.be.deep.equal({ _id: "id" });
-                // expect(findOneAndUpdateStub.args[0][1]).to.be.deep.equal(updateInput);
+        describe('updateAd', () => {
+            it('Should save without images', sinonTest(async function () {
+                const input = fakeCreateInput();
+                const expected = fakeAd();
+                const saveStub = this.stub(mongoose.Model.prototype, 'save').resolves(expected);
+                const result = await resolvers.Mutation.createAd({}, { content: input });
+                expect(result).to.be.deep.equal(new Ad(expected));
+                expect(saveStub.calledOnce).to.be.true;
             }));
-            it('Should find one and return the updated Ad without images', sinonTest(async function () {
-                const updateInput = fakeUpdateInput();
-                const ad = { ...fakeAd(), ...updateInput };
-                const findOneAndUpdateStub = this.stub(mongoose.Model, 'findOneAndUpdate').resolves(ad);
-                const result = await resolvers.Mutation.updateAd({}, { id: "id", content: updateInput });
-                expect(result).to.be.deep.equal(ad);
-                expect(findOneAndUpdateStub.calledOnce).to.be.true;
-                expect(findOneAndUpdateStub.args[0][0]).to.be.deep.equal({ _id: "id" });
-                expect(findOneAndUpdateStub.args[0][1]).to.be.deep.equal(updateInput);
+            it('Should save with images', sinonTest(async function () {
+                const input = fakeCreateInput();
+                const expected = {
+                    ...fakeAd(),
+                    images: [{ name: "image_1", content: "base64:A" }, { name: "image_2", content: "base64:B" }]
+                };
+                const saveStub = this.stub(mongoose.Model.prototype, 'save').resolves(expected);
+                const result = await resolvers.Mutation.createAd({}, { content: input, images: ['base64:A', 'base64:B'] });
+                expect(result).to.be.deep.equal(new Ad(expected));
+                expect(saveStub.calledOnce).to.be.true;
             }));
         });
         describe('updateAd', () => {
