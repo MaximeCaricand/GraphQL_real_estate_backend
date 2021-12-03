@@ -4,10 +4,10 @@
   "description": "- Année : M2 IWOCS - Matière: WEB - TP : n°1",
   "main": "index.js",
   "scripts": {
-    "test-unit": "mocha ./test/unit.js",
+    "test-unit": "mocha ./test/unit/test.js",
     "test-validation": "mocha ./test/validation.js",
     "test": "npm run test-unit && npm run test-validation",
-    "coverage": "nyc --reporter=html mocha",
+    "coverage": "nyc --reporter=html --reporter=text mocha ./test/unit/test.js",
     "start": "node ./app.js",
     "watch": "nodemon ./app.js",
     "start-db": "docker-compose up -d",

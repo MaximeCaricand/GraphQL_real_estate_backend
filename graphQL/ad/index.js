@@ -16,8 +16,8 @@ module.exports.queries = `
 `;
 
 module.exports.mutations = `
-    createAd(content: ${inputNames.AdCreateContent}!, images: [Image!]): ${objectNames.Ad}!
-    updateAd(id: ID!, content: ${inputNames.AdUpdateContent}, images: [Image!]): ${objectNames.Ad}
+    createAd(content: ${inputNames.AdCreateContent}!, images: [String!]): ${objectNames.Ad}!
+    updateAd(id: ID!, content: ${inputNames.AdUpdateContent}, images: [String!]): ${objectNames.Ad}
     deleteAd(id: ID!): ${objectNames.Ad}
     postComment(adID: ID!, user: String!, content: String!): ${objectNames.Ad}
     postAnswer(adID: ID!, commentIndex: Int!, agent: String!, content: String!): ${objectNames.Ad}

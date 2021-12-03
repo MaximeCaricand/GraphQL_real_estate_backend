@@ -25,8 +25,5 @@ module.exports.inputs = [
         propertyType: ${enumNames.PropertyType}!
         propertyStatus: ${enumNames.PropertyStatus}!
         publicationStatus: ${enumNames.PublicationStatus}!
-    }`,
-    `input ${inputNames.ImageContent} {
-        base64: String!
     }`
 ];

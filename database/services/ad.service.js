@@ -75,9 +75,10 @@ module.exports.addAnswser = async (id, questionIndex, agent, content) => {
             content,
             agent
         });
+        const result = await Ad.findOneAndUpdate({ _id: id }, { comments }, { new: true });
+        return new AdModel(result);
     }
-    const result = await Ad.findOneAndUpdate({ _id: id }, { comments }, { new: true });
-    return result ? new AdModel(result) : null;
+    return null;
 }
 
 module.exports.addQuestion = async (id, user, content) => {
@@ -89,9 +90,10 @@ module.exports.addQuestion = async (id, user, content) => {
             user,
             answers: []
         });
+        const result = await Ad.findOneAndUpdate({ _id: id }, { comments }, { new: true });
+        return new AdModel(result);
     }
-    const result = await Ad.findOneAndUpdate({ _id: id }, { comments }, { new: true });
-    return result ? new AdModel(result) : null;
+    return null;
 }
 
 function getImages(files) {

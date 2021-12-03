@@ -4,6 +4,7 @@ class Ad {
         this.title = object.title;
         this.price = object.price;
         this.date = object.date;
+        this.description = object.description;
         this.propertyType = object.propertyType;
         this.propertyStatus = object.propertyStatus;
         this.publicationStatus = object.publicationStatus;

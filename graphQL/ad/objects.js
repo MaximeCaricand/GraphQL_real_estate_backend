@@ -11,7 +11,7 @@ module.exports.objectNames = objectNames;
 module.exports.objects = [
     `type ${objectNames.AdImage} {
         name: String!
-        content: Image!
+        content: String!
     }`,
     `type ${objectNames.AdAnswers} {
         content: String!
